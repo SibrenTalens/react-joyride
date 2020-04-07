@@ -205,16 +205,20 @@ export function isElementVisible(element: ?HTMLElement): boolean {
 
   // The element can still be visible if visibility has explicitly been set to visible, even if a
   // parent has visibility: hidden
-  const { visibility: childVisibility } = getComputedStyle(element);
+  const { visibility } = getComputedStyle(element);
+
+  if (visibility === 'hidden') {
+    return false;
+  }
 
   while (parentElement) {
     if (parentElement === document.body) break;
 
     /* istanbul ignore else */
     if (parentElement instanceof HTMLElement) {
-      const { display, visibility } = getComputedStyle(parentElement);
+      const { display } = getComputedStyle(parentElement);
 
-      if (display === 'none' || (visibility === 'hidden' && childVisibility !== 'visible')) {
+      if (display === 'none') {
         return false;
       }
     }
